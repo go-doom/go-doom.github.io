@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ .Site.Title }} &mdash; pure-Go DOOM engine</title>
+<meta name="description" content="Pure-Go DOOM (id Tech 1, 1993) engine. Hand-port lineage: id Software 1997 source release -> AndreRenaud/gore -> go-doom/engine. CGO_ENABLED=0 on the engine + TamaGo backend path, 4-gate provable-test protocol, 6-arch CI, BSD-3 wrapper + GPL-2 engine carve-out.">
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1b1f24; --muted: #57606a; --card: #f6f8fa;
+    --border: #d0d7de; --accent: #9A1818; --accent-fg: #ffffff;
+    --engine: #9A1818; --brand: #57606a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --card: #161b22;
+      --border: #30363d; --accent: #C44545; --accent-fg: #0d1117;
+      --engine: #C44545; --brand: #9198a1;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1117; --fg: #e6edf3; --muted: #9198a1; --card: #161b22;
+    --border: #30363d; --accent: #C44545; --accent-fg: #0d1117;
+    --engine: #C44545; --brand: #9198a1;
+  }
+  :root[data-theme="light"] {
+    --bg: #ffffff; --fg: #1b1f24; --muted: #57606a; --card: #f6f8fa;
+    --border: #d0d7de; --accent: #9A1818; --accent-fg: #ffffff;
+    --engine: #9A1818; --brand: #57606a;
+  }
+  .theme-toggle {
+    position: fixed; top: 14px; right: 14px; z-index: 10;
+    font: inherit; font-size: .8rem; cursor: pointer; padding: 6px 12px;
+    color: var(--fg); background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+  }
+  .theme-toggle:hover { border-color: var(--accent); }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 72px 0 32px; text-align: center; }
+  .logo { width: 88px; height: 88px; margin: 0 auto 18px; display: block; }
+  h1 { font-size: 2.6rem; margin: 0 0 .3em; letter-spacing: -.02em; }
+  .tagline { font-size: 1.2rem; color: var(--muted); margin: 0 auto; max-width: 680px; }
+  .pills { margin: 22px 0 0; }
+  .pill {
+    display: inline-block; margin: 4px; padding: 3px 10px; font-size: .82rem;
+    color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 999px;
+  }
+  .cta { margin: 30px 0 0; }
+  .btn {
+    display: inline-block; padding: 10px 18px; margin: 4px; border-radius: 8px; text-decoration: none;
+    font-weight: 600; border: 1px solid var(--border);
+  }
+  .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .btn.ghost { color: var(--fg); background: transparent; }
+  .lead { color: var(--fg); max-width: 800px; margin: 8px auto 0; text-align: center; }
+  .lead code { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; }
+  h2.section { text-align: center; margin: 40px 0 4px; font-size: 1.4rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 16px 0 8px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; display: flex; flex-direction: column; }
+  .card h3 { margin: 0 0 .35em; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .card h3 a { text-decoration: none; }
+  .card .accel { color: var(--muted); font-size: .85rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; margin: 0 0 .6em; }
+  .card p { margin: 0 0 .8em; color: var(--fg); font-size: .95rem; }
+  .card .badges { margin-top: auto; }
+  .card .badges img { height: 20px; vertical-align: middle; }
+  .kind { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); white-space: nowrap; }
+  .kind.engine { color: var(--engine); border-color: var(--engine); }
+  .kind.brand { color: var(--brand); border-color: var(--brand); }
+  .principles { color: var(--muted); text-align: center; padding: 10px 0 0; max-width: 820px; margin: 0 auto; }
+  .siblings { text-align: center; padding: 24px 0 0; color: var(--muted); }
+  .siblings a { color: var(--accent); }
+  footer { color: var(--muted); text-align: center; padding: 40px 0 56px; font-size: .9rem; }
+  a { color: var(--accent); }
+</style>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script>
+  (function(){var m=localStorage.getItem('theme');if(m&&m!=='system')document.documentElement.setAttribute('data-theme',m);})();
+</script>
+</head>
+<body>
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Toggle light, dark or system theme"><span id="theme-label">🖥️ System</span></button>
+  <header class="wrap">
+    <img class="logo" src="/img/logo.svg" alt="go-doom logo" width="88" height="88">
+    <h1>go-doom</h1>
+    <p class="tagline">Pure-Go <strong>DOOM</strong> &mdash; the 1993 id Tech 1 engine, derived from
+      <a href="https://github.com/AndreRenaud/gore">AndreRenaud/gore</a> with a bare-metal
+      <a href="https://github.com/usbarmory/tamago">TamaGo</a> backend, <strong>cgo-free</strong>
+      under the <a href="https://github.com/cloud-boot">cloud-boot</a> UEFI loader.</p>
+    <div class="pills">
+      <span class="pill">CGO_ENABLED=0</span>
+      <span class="pill">no SDL · no GL · no OpenAL · no libc</span>
+      <span class="pill">soft renderer over <a href="https://github.com/go-virtio">go-virtio</a></span>
+      <span class="pill">4-gate provable-test</span>
+      <span class="pill">6-arch CI</span>
+      <span class="pill">shareware DOOM1.WAD in-tree</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/go-doom/engine#readme">Engine README</a>
+      <a class="btn ghost" href="https://github.com/go-doom">GitHub</a>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <p class="lead">Running DOOM from Go usually means binding the C engine through cgo (Chocolate
+      Doom, GZDoom, the upstream id Software source release). <strong>go-doom</strong> takes the
+      pure-Go path instead: a hand-port lineage from the
+      <a href="https://github.com/id-Software/DOOM">id Software 1997 source release</a> through
+      <a href="https://github.com/AndreRenaud/gore">AndreRenaud/gore</a>, with a
+      <code>backend/tamago/</code> layer that drives the framebuffer through
+      <a href="https://github.com/go-virtio">go-virtio</a>'s GPU + audio through its virtio-snd
+      channel + input through virtio-input. No SDL, no GL, no OpenAL, no libc.</p>
+
+    <p class="lead"><strong>Built for bare-metal, validated by the 4-gate provable-test protocol.</strong>
+      Every release runs a canonical demo through the <code>cmd/harvest-reference</code> oracle and
+      compares the result on 4 axes: engine determinism (BYTE-EQUAL frames at checkpoint tics),
+      guest-GPU fidelity (&chi;&sup2; &le; tolerance), audio events (BYTE-EQUAL CacheSound /
+      PlaySound log), and audio waveform (per-second RMS envelope bounded). The same protocol is
+      carried forward into <a href="https://github.com/go-quake1">go-quake1</a>, the Q1 sibling.</p>
+
+    <h2 class="section">Repositories</h2>
+    <section class="grid">
+      {{ range .Site.Params.repos }}
+      <article class="card">
+        <h3>
+          <a href="https://github.com/go-doom/{{ .name }}"><code>{{ .name }}</code></a>
+          <span class="kind {{ .kind }}">{{ .kind }}</span>
+        </h3>
+        <p class="accel">{{ .accel }}</p>
+        <p>{{ .result }}</p>
+        <div class="badges">
+          <a href="https://github.com/go-doom/{{ .name }}"><img src="https://img.shields.io/github/last-commit/go-doom/{{ .name }}" alt="last commit"></a>
+          <img src="https://img.shields.io/badge/cgo-disabled-blue" alt="cgo=0">
+        </div>
+      </article>
+      {{ end }}
+    </section>
+
+    <p class="principles">The engine + TamaGo backend run with <code>CGO_ENABLED=0</code> on all
+      six 64-bit Go targets (host-side demos under <code>example/</code> are allowed cgo for SDL /
+      Ebitengine integration). Shareware <code>DOOM1.WAD</code> ships in-tree under id Software's
+      freely-redistributable grant so CI gates are reproducible. BSD-3 wrapper + GPL-2 engine
+      carve-out throughout.</p>
+
+    <h2 class="section">Family</h2>
+    <p class="siblings">
+      <a href="https://github.com/go-doom"><strong>go-doom</strong></a> &mdash; DOOM (1993) &middot; this project &middot;
+      <a href="https://github.com/go-quake1">go-quake1</a> &mdash; id Tech 1 (1996) &middot; active &middot;
+      <a href="https://github.com/go-quake2">go-quake2</a> &middot; <a href="https://github.com/go-quake3">go-quake3</a> &mdash; reserved
+    </p>
+  </main>
+
+  <footer class="wrap">
+    BSD-3-Clause wrapper &middot; GPL-2.0 engine subtree &middot;
+    <a href="https://github.com/go-doom">github.com/go-doom</a> &middot;
+    pure-Go DOOM, no cgo
+  </footer>
+  <script>
+  (function(){
+    var order=['system','light','dark'], root=document.documentElement;
+    var labels={system:'🖥️ System',light:'☀️ Light',dark:'🌙 Dark'};
+    function apply(m){ if(m==='system'){root.removeAttribute('data-theme');}else{root.setAttribute('data-theme',m);} localStorage.setItem('theme',m); var el=document.getElementById('theme-label'); if(el)el.textContent=labels[m]; }
+    var mode=localStorage.getItem('theme')||'system'; apply(mode);
+    var btn=document.getElementById('theme-toggle');
+    if(btn) btn.addEventListener('click',function(){ mode=order[(order.indexOf(mode)+1)%order.length]; apply(mode); });
+  })();
+  </script>
+</body>
+</html>

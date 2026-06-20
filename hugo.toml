@@ -1,0 +1,19 @@
+baseURL = "https://go-doom.github.io/"
+title = "go-doom"
+disableKinds = ["taxonomy", "term", "RSS", "sitemap", "404"]
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+# Each repo card. "result" is the honest one-line blurb (role + what is true).
+# "kind" = the layer: engine / brand.
+[[params.repos]]
+  name = "engine"
+  accel = "doom + seed · backend/tamago · embedwad · harvest-reference · examples"
+  kind = "engine"
+  result = "The DOOM engine in pure Go. Hand-port lineage: id Software 1997 source release -> AndreRenaud/gore -> go-doom/engine, with a bare-metal TamaGo backend + shareware DOOM1.WAD in-tree. CGO_ENABLED=0 on the engine path, 4-gate provable-test protocol, 6-arch CI, BSD-3 wrapper + GPL-2 engine carve-out."
+[[params.repos]]
+  name = "brand"
+  accel = "Logos, favicons, social previews"
+  kind = "brand"
+  result = "Brand assets — SVG / PNG / JPG / ICO / ICNS in color, white-transparent and black-transparent variants. Drives this landing, the engine README banner, and the org avatar."
