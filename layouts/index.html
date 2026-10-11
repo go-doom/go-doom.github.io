@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+{{/* Dark Reader repaints pages that already draw their own dark theme, as this one does: ask it to stand aside. */}}
+<meta name="darkreader-lock">
 <title>{{ .Site.Title }} &mdash; pure-Go DOOM engine</title>
 <meta name="description" content="Pure-Go DOOM (id Tech 1, 1993) engine. Hand-port lineage: id Software 1997 source release -> AndreRenaud/gore -> go-doom/engine. CGO_ENABLED=0 on the engine + TamaGo backend path, 4-gate provable-test protocol, 6-arch CI, BSD-3 wrapper + GPL-2 engine carve-out.">
 <style>
