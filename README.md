@@ -43,3 +43,12 @@ Configure GitHub Pages on the repo with **Source = "GitHub Actions"**
 - [go-quake3](https://go-quake3.github.io) — id Tech 3 (1999), reserved.
 - [cloud-boot](https://cloud-boot.github.io) — the UEFI bootloader that
   hands control to the TamaGo DOOM guest.
+
+## The design is not here
+
+It comes from the shared Hugo module
+[`go-fleettools/landingkit`](https://github.com/go-fleettools/landingkit),
+pinned in `go.mod` (Renovate bumps it); `kit.go` keeps `go mod tidy` from
+deleting that requirement. `[params.brand]` in `hugo.toml` is read from the logo by
+`landingkit brand`. A file under `layouts/partials/` with the name of one of the
+kit's would silently override it.
