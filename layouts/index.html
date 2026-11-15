@@ -42,15 +42,13 @@
   <div class="hero"><div class="wrap">
     <div>
       <h1 class="head">go-doom</h1>
-      <p class="sub">Pure-Go <strong>DOOM</strong> &mdash; the 1993 id Tech 1 engine, derived from
+      <p class="sub">{{ if partial "mantra-on.html" . }}Go{{ else }}Pure-Go{{ end }} <strong>DOOM</strong> &mdash; the 1993 id Tech 1 engine, derived from
       <a href="https://github.com/AndreRenaud/gore">AndreRenaud/gore</a> with a bare-metal
-      <a href="https://github.com/usbarmory/tamago">TamaGo</a> backend, <strong>cgo-free</strong>
+      <a href="https://github.com/usbarmory/tamago">TamaGo</a> backend, <strong>{{ if not (partial "mantra-on.html" $) }}cgo-free{{ end }}</strong>
       under the <a href="https://github.com/cloud-boot">cloud-boot</a> UEFI loader.</p>
-      <div class="cta">
-        <a class="btn btn-primary" href="https://github.com/go-doom/engine#readme">{{ partial "icons/book.html" . }}Engine README</a>
-        <a class="btn btn-ghost" href="https://github.com/go-doom">{{ partial "icons/github.html" . }}GitHub</a>
-      </div>
-      <div class="trust">{{ if not (partial "mantra-on.html" $) }}<span class="pill">CGO_ENABLED=0</span>{{ end }}
+      {{/* [[params.cta]] in hugo.toml: the kit renders the row */}}
+      {{ partial "cta.html" . }}
+      <div class="trust">{{ if not (partial "mantra-on.html" $) }}{{ if not (partial "mantra-on.html" $) }}<span class="pill">CGO_ENABLED=0</span>{{ end }}{{ end }}
       <span class="pill">no SDL · no GL · no OpenAL · no libc</span>
       <span class="pill">soft renderer over <a href="https://github.com/go-virtio">go-virtio</a></span>
       <span class="pill">4-gate provable-test</span>
