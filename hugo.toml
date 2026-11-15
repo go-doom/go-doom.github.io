@@ -48,3 +48,13 @@ disableKinds = ["taxonomy", "term", "RSS", "sitemap", "404"]
 # shipped under its own licence (read from its licence files).
 [params.mantra]
   items = ["LICENSE=BSD-3-Clause", "CGO_ENABLED=0", "engine: GPL-2.0-only"]
+
+# The hero's buttons, rendered by landingkit's cta.html in the kit's order.
+[[params.cta]]
+  kind  = "docs"
+  href  = "https://github.com/go-doom/engine#readme"
+  label = "Engine README"
+[[params.cta]]
+  kind  = "github"
+  href  = "https://github.com/go-doom"
+  label = "GitHub"
